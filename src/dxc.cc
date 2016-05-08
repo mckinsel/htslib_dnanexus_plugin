@@ -11,7 +11,6 @@ extern "C" {
 
 DXFile* DXFile_create(const char* dxid, const char* proj)
 {
-  std::cerr << "dxid: " << std::string(dxid) << std::endl;
   return reinterpret_cast<DXFile*>(new dx::DXFile(dxid, proj));
 }
 
@@ -61,23 +60,16 @@ char* DXFile_resolve_filename(const char* filename, const char* proj)
   json_string += project;
   json_string += "\"}}";
   
-  std::cerr << json_string << std::endl;
-
   dx::JSON json_query(dx::JSON_HASH);
   json_query.readFromString(json_string);
 
-  std::cerr << json_query.toString() << std::endl;
   dx::JSON json_result = dx::DXSystem::findDataObjects(json_query);
-  std::cerr << json_result.toString() << std::endl;
-  std::cerr << json_result["results"].toString() << std::endl;
-  std::cerr << json_result["results"][0].toString() << std::endl;
-  std::cerr << json_result["results"][0]["id"].toString() << std::endl;
+
   if(json_result["results"].size() != 1) {
     return NULL;
   }
   
   std::string result = json_result["results"][0]["id"].toString();
-  std::cerr << result << std::endl;
   result.erase(0, 1);
   result.erase(result.size() - 1);
   char* output = (char*) malloc(result.size() + 1);

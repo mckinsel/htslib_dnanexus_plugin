@@ -56,7 +56,7 @@ static const struct hFILE_backend dnanexus_backend =
 hFILE* hopen_dnanexus(const char* file_name, const char* modes)
 {
   hFILE_dnanexus* fp;
-  fp = (hFILE_dnanexus*) hfile_init(sizeof (hFILE_dnanexus), modes, 0);
+  fp = (hFILE_dnanexus*) hfile_init(sizeof (hFILE_dnanexus), modes, 10*1024*1024);
   if (fp == NULL) return NULL;
   
   /* Remove the "dx:" from the name of the file */ 
@@ -64,6 +64,10 @@ hFILE* hopen_dnanexus(const char* file_name, const char* modes)
   strcpy(stripped_file_name, file_name + 3);
 
   char* file_id = DXFile_resolve_filename(stripped_file_name, NULL);
+  free(stripped_file_name);
+  if(file_id == NULL) {
+    return NULL;
+  }
   fp->dxfile = DXFile_create(file_id, NULL);
   free(file_id);
 
