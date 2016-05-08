@@ -1,30 +1,22 @@
-#include "dxrequest.h"
-
-#include <curl/curl.h>
-
+#include "dxc.h"
 #include "hfile_internal.h"
 
 #include <errno.h>
-#include <stdio.h>
-#include <string.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <curl/curl.h>
 
 typedef struct {
   hFILE base;
-  char* file_id;
-  off_t pos;
+  DXFile* dxfile;
 } hFILE_dnanexus;
 
 ssize_t dnanexus_read(hFILE *fpv, void *bufferv, size_t nbytes)
 {
-    fprintf(stderr, "Calling dnanexus read %zu\n", nbytes);
     hFILE_dnanexus* fp = (hFILE_dnanexus*) fpv;
     char* buffer = (char*) bufferv;
-    char* read_bytes = DXRequest_download(fp->file_id, fp->pos, fp->pos + nbytes);
-    fprintf(stderr, "Read bytes at %p\n", read_bytes);
-    strncpy(buffer, read_bytes, nbytes);
-    free(read_bytes);
-    fp->pos += nbytes;
-    return nbytes;
+    DXFile_read(fp->dxfile, buffer, nbytes);
+    return DXFile_gcount(fp->dxfile);
 }
 
 off_t dnanexus_seek(hFILE* fpv, off_t offset, int whence)
@@ -33,11 +25,11 @@ off_t dnanexus_seek(hFILE* fpv, off_t offset, int whence)
 
   switch(whence) {
     case SEEK_SET:
-      fp->pos = offset;
+      DXFile_seek(fp->dxfile, (int64_t) offset);
       break;
     case SEEK_CUR:
-      fp->pos += offset;
-      break;
+      errno = ENOSYS;
+      return -1;
     case SEEK_END:
       errno = ENOSYS;
       return -1;
@@ -45,14 +37,13 @@ off_t dnanexus_seek(hFILE* fpv, off_t offset, int whence)
       errno = EINVAL;
       return -1;
   }
-  return fp->pos;
+  return offset;
 }
 
 int dnanexus_close(hFILE* fpv)
 {
   hFILE_dnanexus* fp = (hFILE_dnanexus*) fpv;
-  fp->file_id = "";
-  fp->pos = 0;
+  DXFile_destroy(fp->dxfile);
   return 0;
 }
 
@@ -68,23 +59,22 @@ hFILE* hopen_dnanexus(const char* file_name, const char* modes)
   fp = (hFILE_dnanexus*) hfile_init(sizeof (hFILE_dnanexus), modes, 0);
   if (fp == NULL) return NULL;
   
+  /* Remove the "dx:" from the name of the file */ 
   char* stripped_file_name = malloc(strlen(file_name));
   strcpy(stripped_file_name, file_name + 3);
-  /*fp->file_id = DXRequest_lookup_file(stripped_file_name);*/
-  fp->file_id = stripped_file_name;
-  fp->pos = 0;
+
+  char* file_id = DXFile_resolve_filename(stripped_file_name, NULL);
+  fp->dxfile = DXFile_create(file_id, NULL);
+  free(file_id);
 
   fp->base.backend = &dnanexus_backend;
   return &fp->base;
-
 }
-
-int always_remote(const char *fname) { (void) fname; return 1; }
 
 int hfile_plugin_init()
 {
   static const struct hFILE_scheme_handler handler =
-      { hopen_dnanexus, always_remote, "dnanexus", 50 };
+      { hopen_dnanexus, hfile_always_remote, "dnanexus", 50 };
     
   CURLcode err;
   err = curl_global_init(CURL_GLOBAL_ALL);

@@ -1,32 +1,19 @@
-CFLAGS=-fPIC -Wall -Wextra -O2 -g -Isrc -I jansson-2.7/src -I /home/vagrant/htslib
-LDFLAGS=-L/usr/local/lib
-LIBS=-ljansson -lcurl
-RM=rm -f
-TARGET_LIB=hfile_dnanexus.so
+COMPILER_FLAGS=-Wall -Wextra -g -O2 -fPIC
 
-SRCS=$(wildcard src/*.c)
-OBJS=$(patsubst %.c,%.o,$(SRCS))
+CXXFLAGS=$(COMPILER_FLAGS) -I$(DNANEXUS_HOME)/share/dnanexus/src/cpp
+CFLAGS=$(COMPILER_FLAGS) -I$(HTSLIB_ROOT)
 
-TEST_SRCS=$(wildcard tests/*_tests.c)
-TESTS=$(patsubst %.c,%,$(TEST_SRCS))
+LDFLAGS=-L$(DNANEXUS_HOME)/share/dnanexus/src/cpp/dxcpp/build \
+		-L$(DNANEXUS_HOME)/share/dnanexus/src/cpp/dxjson/build \
+		-L$(DNANEXUS_HOME)/share/dnanexus/src/cpp/SimpleHttpLib/build
+LDLIBS=-lboost_thread -lboost_system -lboost_regex -ldxcpp -ldxjson -ldxhttp -lcurl
 
-.PHONY: all
-all: ${TARGET_LIB}
+C_SRCS=$(wildcard src/*.c)
+CXX_SRCS=$(wildcard src/*.cc)
+C_OBJS=$(patsubst %.c,%.o,$(C_SRCS))
+CXX_OBJS=$(patsubst %.cc,%.o,$(CXX_SRCS))
 
-$(TARGET_LIB): $(OBJS)
-	$(CC) -shared ${LDFLAGS} -o $@ $^ $(LIBS)
+all: hfile_dnanexus.so
 
-$(SRCS:.c=.d):%.d:%.c
-	$(CC) $(CFLAGS) -MM $< >$@
-
-include $(SRCS:.c=.d)
-
-.PHONY: clean
-clean:
-	-${RM} ${TARGET_LIB} ${OBJS} $(SRCS:.c=.d) $(TESTS)
-
-.PHONY: test
-test: LDFLAGS += -L.
-test: LDLIBS += $(TARGET_LIB) -ldl -lcurl -ljansson
-
-test: $(TESTS)
+hfile_dnanexus.so: $(C_OBJS) $(CXX_OBJS)
+	$(CXX) -shared $(LDFLAGS) $^ -o $@ $(LDLIBS)
