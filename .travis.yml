@@ -1,38 +1,29 @@
 sudo: required
-dist: trusty
 language: c
-
-install:
-    - sudo apt-get update -qq
-    - sudo apt-get install -y make python-setuptools python-pip python-virtualenv python-dev
-    - sudo apt-get install -y g++ cmake libboost1.55-all-dev libcurl4-openssl-dev
-    - sudo apt-get install -y zlib1g-dev libbz2-dev flex bison autoconf
-
-script:
-    # Install dx-toolkit
-    - wget https://wiki.dnanexus.com/images/files/dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
-    - tar xf dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
-    - source dx-toolkit/environment
-    # Build dxcpp
-    - make -C dx-toolkit/share/dnanexus/src/cpp/
-    # Download and build htslib
-    - wget https://github.com/samtools/htslib/releases/download/1.3.1/htslib-1.3.1.tar.bz2
-    - tar xf htslib-1.3.1.tar.bz2
-    - export HTSLIB_ROOT=$(pwd)/htslib-1.3.1
-    # Remove line that caps capacity at 32kb, otherwise there will be lots of
-    # small requests
-    - sed -e '/capacity > 32768/ s/^/\/\//' -i htslib-1.3.1/hfile.c
-    - make
-    - cd htslib-1.3.1 && ./configure --enable-plugins --enable-libcurl && make && sudo make install && cd ..
-    # Copy the dnanexus plugin to the plugin directory
-    - sudo cp hfile_dnanexus.so /usr/local/libexec/htslib
-    # Install samtools using the existing htslib build
-    - wget https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2
-    - tar xf samtools-1.3.1.tar.bz2
-    - cd samtools-1.3.1 && ./configure --with-htslib=system --without-curses && make && sudo make install && cd ..
-    - export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-    - bash tests/test.sh
-env:
-  global:
-    - secure: "jLalAEMYV6aIbyTDaSAQkLAK+Fx5REzHCEo6bMPf3VFzUjpwGyEyH2dUBZlGUhkyClzyKxgMOZi5zBCqhGWj8j3laQraBK9Bg6bTz/QlVFQvdrwSHYntSFDv/NXkzmrmThSa4zB9cQiceOlDNqmn2Knk/fNPvbps5pFnocJAK9Bd9yPVurC0v+2yXUj2J1+vpF+yU4S/SI14dobE0C78D8tne4Uq/hU0kPIzf/wcUxp7pcb9Y966BymLw15l1/4pd+DAwFGhMLNexMv6IeUmd6wiY7AtEfNaEN8SzXnJIcnqXBJwt5n3pw/STO5N9a86q+8Fw8WazwE9+273iN3NjJqOh3FRPpVoPfS7AoSRv/xCav6G6O7F1jeHI1KwkwCtqULNZNPubrHAp3EJfgsWTE+rqEzuJTxdJwFrIVXckkFMXQLBur1LrzK/bVNj9E7/AoZJ9vMW7NHJVOdu/wppCmKhFrl0owyuVQUC+zKvkTfSJhHTIA4XewT9mt2+0r6l5xPOP3wSVPPs7sRj8FkpvqVev9dWhzpEc23mwrZDdXlWgvHFVxGajoYlY7u84kzuVeZn078lf6+t5eU6QvdtGS9xQaAqXwaahj9MLUDEkJl1baqisfO7QWBoRiMcTt1rS0gspTYYfQtBUKahse3w2+v7c7a0at6yFVks9UTcb4Y="
-    - secure: "n/CsSlwnu9qIz6BcnXUaVrDzWAitWmmQsn99IoUZlKM9ZEYiXzPsu/dq9DQC1iNe/pBFT4dJRXOR7CEggYDZpL7us0X8RSDDBCjxGviGUogHnzookM51FTlSbzozNWdh+HZP0KF9hR/t8S1F66app8XKumHZ4QKIh0zXW1m2woS/TCFS8yXBO7v0BUgNcJgyf6Y4xZ1pC0ZBIdhdClyIiZxNEKiuoHAuG90Kz2kNv4GsOQPe/5v7Ccl3yHIkVhsvYGII5xVw7tlaHeoFda2kxUP1T+W5vXIjBH0jb2UKq5xOU5K1A4zUArUlEPljpye4ntDZH0bRqcTuXBjsafKofCg08v0gIpWLWvAuMhHma8E1e2z+rmrB2LNORwtCEHM85HF5R40gy3yMG12nxCGoI/G5q6oVYSALiyS58jDChVSUOMcF5wVJFuGm+Sw0/vwOzWCZxEt9BZak3CsdOYB/pnIc+zUhJjG+VLqD7/SsoyxS+MfxuL4aYWyihbYpxycRSDqxIY7WBsavT5o22LXjayVLDMemxRFt1MOS780kSUgHVW+N+fKZtgxvtv/z6+x/Wk7Qx7HRyTcQXsSA1mFZbsrI3phGQoNK1OfFZcs7e9TN82LgVIoh1+JLvEaObghDfIiP9imnprgBwh/fCrgbOQDMLsyU040FkLZpu/9ny2U=" 
+env: 
+  global: 
+  - secure: FTAcwV1i+7U7+ibyKY2+ijLtUR8bx8T2LEykah51GEaQNdKZSX6FysqWMHvHGZfMjuMa3yCI1ViYfovro1kJzkUlbBExZJrcMPsCkbu8qIsmXXBl4dl+pXxo6K+QxoAUxMIpaEfLE3c9/grT8E6FigKDMxc3U0y1bSWOh+izIGF1TcKl929mvlX4Hnja3wFuVdrRRysmBX47tpVjGHglsj2WSB4G/UZPrdpOndAiQVh+eZUyHA9jBIXQ8PkVsMfWzxHMDYWyWRuj83m72fleFCzRShW5be25ybKk1wVd30/xVD6fOo6HvMAgxuGQNeEullJYTcWMtDRyDUCy5ZUseRbC5HKSctiCWn1sAZLTtc6ARYqa1yNVIw13E5hhZfYmfnQuGLCElVcrpa4lKQBOAHsDiEo77V14LFFrxShltYOfFk4bdpCYS8+FNiIszq4Q9wowOecU6SPsn0frKCcu4EpBi0e2vBpyV9W8I8abYEk5oyNkOG0am6xWiONFQjGN2An3i3aa+8EdsQj3AXX3FbupItMJFWyGrqSbeLgHJn5wFrjuWY2NhkREQPqAkwjtubCMhmV8T3zrWsUxZsNRAf4yPMhRC30Hdpyu+ZKXybWIWgOxM7Epyy0g/xKEzveG8DTIbHoVV6521UNc/hQvzdKVtqqHdjulFnsBTTsqVHY=
+  - secure: on3TbHXq5cl67el4yRGqE2HMskOoJJnxbmDN+OpKFrKqhEksyN3oFahSo12fOSOCjUGidMsHIt4YqVwnczlZu4Al0NfQP81nvl3a9cRTLF3GxpOocDyurb5obgx6eTHEHO/s+JI/lwXrun/PPzdvO41FgkkhZAKkvrKqfdwr7PXniFK0nmkByWSlHr45Chi41bxed9sDk5GOc2rCFrvG5WqUPNJ4dcc2lucXUVsTrGfZPhKm5Em2e72gWsL3/j2AUnswoXNwJ8rZ9ZZDKMqWncPvWMWSAyI9p6wPa3zO0aDh/NJApTiKpGdB2pqlXRmJqDHr102ldkZ+kwcK22ajXWpbd09qoHw4HIuN5O5vDHNN/n7MbC660l8hfdMkiFUX+P47AQLGhe3XxzALg0w0H4h4xVrdSzp7jZjS/XjuG9l/nJPHF7CtFMjKUaXzZEoxe8OqEAPfJyMrjiC2O+p+9E3QTP6U4F8mAglQTOxLtbk4HhzWUkj1G65IBhXpYtl7gHkr6wdnwH2cs5CIsgUeRoSF6C1QTVdY321qVyoFBMRO/mX4mipuiwAD6DFltbCnwAKcT34EUodTRhIGIOseasy/SatFIGtNdxKIiCVtaIqaZuuVUqdKSaCSL8o5dW+2HqFdMOU3HOLEGvilYNzR2ulxYzIqqnpT8fwTiPCbtHQ=
+install: 
+- sudo apt-get update -qq
+- sudo apt-get install -y make python-setuptools python-pip python-virtualenv python-dev
+- sudo apt-get install -y g++ cmake libboost1.55-all-dev libcurl4-openssl-dev
+- sudo apt-get install -y zlib1g-dev libbz2-dev flex bison autoconf
+script: 
+- wget https://wiki.dnanexus.com/images/files/dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
+- tar xf dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
+- source dx-toolkit/environment
+- make -C dx-toolkit/share/dnanexus/src/cpp/
+- wget https://github.com/samtools/htslib/releases/download/1.3.1/htslib-1.3.1.tar.bz2
+- tar xf htslib-1.3.1.tar.bz2
+- export HTSLIB_ROOT=$(pwd)/htslib-1.3.1
+- sed -e '/capacity > 32768/ s/^/\/\//' -i htslib-1.3.1/hfile.c
+- make
+- cd htslib-1.3.1 && ./configure --enable-plugins --enable-libcurl && make && sudo make install && cd ..
+- sudo cp hfile_dnanexus.so /usr/local/libexec/htslib
+- wget https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2
+- tar xf samtools-1.3.1.tar.bz2
+- cd samtools-1.3.1 && ./configure --with-htslib=system --without-curses && make && sudo make install && cd ..
+- export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+- bash tests/test.sh
+dist: trusty
