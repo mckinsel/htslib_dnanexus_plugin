@@ -22,6 +22,7 @@ ssize_t dnanexus_read(hFILE *fpv, void *bufferv, size_t nbytes)
 off_t dnanexus_seek(hFILE* fpv, off_t offset, int whence)
 {
   hFILE_dnanexus* fp = (hFILE_dnanexus*) fpv;
+  off_t pos;
 
   switch(whence) {
     case SEEK_SET:
@@ -31,8 +32,9 @@ off_t dnanexus_seek(hFILE* fpv, off_t offset, int whence)
       errno = ENOSYS;
       return -1;
     case SEEK_END:
-      errno = ENOSYS;
-      return -1;
+      pos = DXFile_size(fp->dxfile) + offset;
+      DXFile_seek(fp->dxfile, (int64_t) pos);
+      return pos;
     default:
       errno = EINVAL;
       return -1;

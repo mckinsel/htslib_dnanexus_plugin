@@ -45,6 +45,12 @@ void DXFile_seek(DXFile* dxfile, int64_t pos)
   reinterpret_cast<dx::DXFile*>(dxfile)->seek(pos);
 }
 
+int64_t DXFile_size(const DXFile* dxfile)
+{
+  dx::JSON describe_json = reinterpret_cast<const dx::DXFile*>(dxfile)->describe();
+  return describe_json["size"].get<int64_t>();
+}
+
 char* DXFile_resolve_filename(const char* filename, const char* proj)
 {
   std::string project;
