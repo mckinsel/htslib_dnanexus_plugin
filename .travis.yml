@@ -1,3 +1,9 @@
+install: 
+- sudo apt-get update -qq
+- sudo apt-get install -y make python-setuptools python-pip python-virtualenv python-dev
+- sudo apt-get install -y g++ cmake libboost1.55-all-dev libcurl4-openssl-dev
+- sudo apt-get install -y zlib1g-dev libbz2-dev flex bison autoconf
+language: c
 script: 
 - wget https://wiki.dnanexus.com/images/files/dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
 - tar xf dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
@@ -17,15 +23,9 @@ script:
 - env
 - dx ls
 - bash tests/test.sh
-sudo: required
-dist: trusty
 env: 
   global: 
   - secure: on3TbHXq5cl67el4yRGqE2HMskOoJJnxbmDN+OpKFrKqhEksyN3oFahSo12fOSOCjUGidMsHIt4YqVwnczlZu4Al0NfQP81nvl3a9cRTLF3GxpOocDyurb5obgx6eTHEHO/s+JI/lwXrun/PPzdvO41FgkkhZAKkvrKqfdwr7PXniFK0nmkByWSlHr45Chi41bxed9sDk5GOc2rCFrvG5WqUPNJ4dcc2lucXUVsTrGfZPhKm5Em2e72gWsL3/j2AUnswoXNwJ8rZ9ZZDKMqWncPvWMWSAyI9p6wPa3zO0aDh/NJApTiKpGdB2pqlXRmJqDHr102ldkZ+kwcK22ajXWpbd09qoHw4HIuN5O5vDHNN/n7MbC660l8hfdMkiFUX+P47AQLGhe3XxzALg0w0H4h4xVrdSzp7jZjS/XjuG9l/nJPHF7CtFMjKUaXzZEoxe8OqEAPfJyMrjiC2O+p+9E3QTP6U4F8mAglQTOxLtbk4HhzWUkj1G65IBhXpYtl7gHkr6wdnwH2cs5CIsgUeRoSF6C1QTVdY321qVyoFBMRO/mX4mipuiwAD6DFltbCnwAKcT34EUodTRhIGIOseasy/SatFIGtNdxKIiCVtaIqaZuuVUqdKSaCSL8o5dW+2HqFdMOU3HOLEGvilYNzR2ulxYzIqqnpT8fwTiPCbtHQ=
-  - secure: guzXFIRvBoft41GUXC+s5lch2YgRNuczQZh82axTALfAr2kCnpDC5OYrsg/NDOw3HLrjbBKUElApKFUINbwKbLixHe5MWmpq1+VUcK8c9d8jYDmjZtZA/gDVUt435ShpAcGklsH3QGIYLN8QCVe7ynRyDpqreJeLO0MY1Y7AyhOl2lYm2ZB/aqs8y1qgPoY/VGgUrWUP5PzWSulX9R4bEaWio35Zvt+giXk1WCrc7k0hqBfy12WooJED5N5/ftuRBfxqRRVZbFkabuUfq1guFKjgA4x5BMLaL9PQ3fgGSxFvk+dVUspHha6JXdGf8485TM6NzoLEypVnpKJgV2pygVNuss/8uYyT3Tuwr6DkgU89ltfzGOLt9w4gSpIHV94ua/AhQ0llzSi7IGl6bUQT+xIW/dlQ7hj+43ls/woGQYYuKuubfe/QrCBz4uUYweVtO7g8qO9WpCui+k4mOKklPbSdfeFE2LnYYAp7WwsND+d2pPPl4Tie2tf6XF38FSWyhwtT82zCM9KlP/60/1agNE63IUFHYDSlHocFCS3dDHKQyPYRyol6A7q7YTDC1q4hz/NFkWmw8kGHKE3XmLXswdqMGlrnm6efDQApbERiYL7MCPdHyHuZzRdSdwxFIh6ylwPIavpWqRxR23cLvyXK9T6xd6B321E0TANEM8Znvjk=
-install: 
-- sudo apt-get update -qq
-- sudo apt-get install -y make python-setuptools python-pip python-virtualenv python-dev
-- sudo apt-get install -y g++ cmake libboost1.55-all-dev libcurl4-openssl-dev
-- sudo apt-get install -y zlib1g-dev libbz2-dev flex bison autoconf
-language: c
+  - secure: d1r1Ti+TOm0uuylXe9EhwYWPdV2nhdtYEV+CCmAVtQXpeZKKvr4toldcDRh+Q8pcq45KcGWHpFLCAfJhbqDAu61ug9kQEQb5L+mDpmIOYcnY/FeG3pC9DLFwjyQTdmJ9Nfg5hJOq0NiutFM+F5KdC7aMlJ7X3b8SffXZhgqieAWQKaAEt36cTIP5G1noue8aJ+o8yfJJmLJsJGpH2yprywi6mjy0Y9jUake+pcgX/jyXKTELNgQEeEjMMrhaU+LQoH/flfa/s8cohp0L0yVBkEBSvnN7Ns1ZBgB65yKUyxXqO6RGtS00LM/vCWv4YdaK5HWsEw5TIt8xdMBhr+5uDuVUDvtC8979VXVbveLPlpd37e94eXDmglXaRrN2iY0M020ynJlj5XdzEMq+xBXrudf11vpKiBsh2A1muYR0xUIS7tzs2bfConfRbkIlaaQQk2kXBZ2Q8xuHNfXKkHu35fKXeyeIoPKpBvyu8cS79m3l312HDdEmeP5ppJFMB8XPOgkGVYv+uu4Mvoh02D45D26R5FfRJ3QDv9WF1CcjsA7ArQSiDPll5Hi+hXamV6eaGmbsQVtR+e24SC1IXDEy8namaxz0PS9+FhJyffYWuwUQ/DGdOPlROb7nkiVQdfe6/JTDe7zs+FzYP/MFRN7tYfec6YNCPMec9wICKQaf/GY=
+sudo: required
+dist: trusty
