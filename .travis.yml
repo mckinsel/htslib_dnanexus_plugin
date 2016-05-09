@@ -3,31 +3,36 @@ dist: trusty
 language: c
 
 install:
-    sudo apt-get update -qq
-    sudo apt-get install -y make python-setuptools python-pip python-virtualenv python-dev \
+    - sudo apt-get update -qq
+    - sudo apt-get install -y make python-setuptools python-pip python-virtualenv python-dev \
       g++ cmake libboost1.55-all-dev libcurl4-openssl-dev zlib1g-dev libbz2-dev flex bison \
       autoconf
 
 script:
     # Install dx-toolkit
-    wget https://wiki.dnanexus.com/images/files/dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
-    tar xf dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
-    source dx-toolkit/environment
+    - wget https://wiki.dnanexus.com/images/files/dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
+    - tar xf dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
+    - source dx-toolkit/environment
     # Build dxcpp
-    make -C dx-toolkit/share/dnanexus/src/cpp/
+    - make -C dx-toolkit/share/dnanexus/src/cpp/
     # Download and build htslib
-    wget https://github.com/samtools/htslib/releases/download/1.3.1/htslib-1.3.1.tar.bz2
-    tar xf htslib-1.3.1.tar.bz2
-    export HTSLIB_ROOT=$(pwd)/htslib-1.3.1
+    - wget https://github.com/samtools/htslib/releases/download/1.3.1/htslib-1.3.1.tar.bz2
+    - tar xf htslib-1.3.1.tar.bz2
+    - export HTSLIB_ROOT=$(pwd)/htslib-1.3.1
     # Remove line that caps capacity at 32kb, otherwise there will be lots of
     # small requests
-    sed -e '/capacity > 32768/ s/^/\/\//' -i htslib-1.3.1/hfile.c
-    make
-    cd htslib-1.3.1 && ./configure --enable-plugins --enable-libcurl && make && sudo make install && cd ..
+    - sed -e '/capacity > 32768/ s/^/\/\//' -i htslib-1.3.1/hfile.c
+    - make
+    - cd htslib-1.3.1 && ./configure --enable-plugins --enable-libcurl && make && sudo make install && cd ..
     # Copy the dnanexus plugin to the plugin directory
-    sudo cp hfile_dnanexus.so /usr/local/libexec/htslib
+    - sudo cp hfile_dnanexus.so /usr/local/libexec/htslib
     # Install samtools using the existing htslib build
-    wget https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2
-    tar xf samtools-1.3.1.tar.bz2
-    cd samtools-1.3.1 && ./configure --with-htslib=system --without-curses && make && sudo make install && cd ..
-    export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    - wget https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2
+    - tar xf samtools-1.3.1.tar.bz2
+    - cd samtools-1.3.1 && ./configure --with-htslib=system --without-curses && make && sudo make install && cd ..
+    - export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    - bash tests/test.sh
+env:
+  global:
+    - secure: "1QSB4Q99+8jN/L2lZr01XUtLDLClT5Ye8lDSw+vT9qQYmPfJbVd8nktlNb3O+Aey9gE0KN6jxSl9e6L6YXxjeLhoxcDRkZ0obqllyjZ5I6yjCe4ylH6LOka4zB8kkAICDnpT1z3Uzi343E3AP0e55XP77Ci90PvwVaYmgsDjZtj7eGR0SX2CxI0z4pRxSL2v3SgieqpNbp8/JpkW4dFcdcadI8qE84+bjlpz67rnD5UTuUfxpsewK6fIsBYrN8AjWhLAHRxDiLcVJJvznrdhY3WvC2CUd57PwMIPeYKcByuaLBKysqg5Il9f8+ynC1yVQ2QtmzL2Hxq3eUPF0f7sIRL2SEjkGcfsYZZUyZxj4BU0DmHH01mgJHVT8kjgpdYZvpLaHKgTYLrXsgEkjiRYjju55xmPBWXMd0gM1FR+ce9w6rXfS9W1UJgDkQShDdIkTSVHZ7jxbdrrox7ZsOkflzM4CJ0IHHJ4amDIt+LRNL3VWmBMKLj/ih+w03JEWmts5vrLbUPQYPcNtAg9Uj8kzAFW+U+rP2okOGFQxXqlYktIwTN+DkTnsLDwBUjMkJ4/K/Xx0gXcatq+vz6MLCO6ZQNLFMHvV0iR9oJdbnHf3RC9hbxUU5QF4YFo3hl9C+M3puWkRBjOyzzEJ33lNZQDVQkYD8WR4TvgZXoravckeQg="
+    - secure: "qkU+BNTiYxPTuc+uIh7NkLeH0kPKp/INvmbSEpzz9fGLlphKtsv84SjMxQohvGo/wtDacJoS+No5OgSJxBopw7WF4N/i5COBv0Ta4DCW/yEC+CCGhpDHcEWOdNtKpdBVJyQZ8wS05lMhqVC3Bq3lCIRpBmwY/Rpg3xqhZOBT8/13V/ZFlUZuryROz4nYlUISJzvzhWuKZc5eyJJ7anfSxLLE/ckILEYJqvr87BT3NLW9/g5yPlj3qyiWvLcjsU0jHbpoX2d0OURBVuwIkyLtAhd4XhWQp6y7Amcg/nGSSa/OPubf/wOHlfa4KsSxV1SwxPMdligxp5lQiKP8BCty80YD6dKaST2v4CpySQ40pUyOCWKC5xrdj8JW7hJBU6gOR/HN3xFWf0Pyfi+qyZLN+Exn9kpFvtb3yVj6JHYTOZt14dQXqO6t/is2rykP8jKdiqaKtYK0CcPjGoryeRkicE6vQtnEtRVUNFOE6B09ugIkblP3s6KxPFg0ZMaIQZMB8z/mJEhjVW8QzTOzKH6I2lj9trTkRXOqdYxS+gZBgITc3Omt45yPWBic3jLRodrsDGCU6cNHJnCIKYL49IM30RZMnxlGLNwsxclheqcFt4azO5yhCUv+3bQjeM93Dm3za812N1sTHocftEQ9NcJbP6kJ1htM2T0nLUSGkrWamJ8="
