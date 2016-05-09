@@ -2,14 +2,13 @@ dist: trusty
 env: 
   global: 
   - secure: on3TbHXq5cl67el4yRGqE2HMskOoJJnxbmDN+OpKFrKqhEksyN3oFahSo12fOSOCjUGidMsHIt4YqVwnczlZu4Al0NfQP81nvl3a9cRTLF3GxpOocDyurb5obgx6eTHEHO/s+JI/lwXrun/PPzdvO41FgkkhZAKkvrKqfdwr7PXniFK0nmkByWSlHr45Chi41bxed9sDk5GOc2rCFrvG5WqUPNJ4dcc2lucXUVsTrGfZPhKm5Em2e72gWsL3/j2AUnswoXNwJ8rZ9ZZDKMqWncPvWMWSAyI9p6wPa3zO0aDh/NJApTiKpGdB2pqlXRmJqDHr102ldkZ+kwcK22ajXWpbd09qoHw4HIuN5O5vDHNN/n7MbC660l8hfdMkiFUX+P47AQLGhe3XxzALg0w0H4h4xVrdSzp7jZjS/XjuG9l/nJPHF7CtFMjKUaXzZEoxe8OqEAPfJyMrjiC2O+p+9E3QTP6U4F8mAglQTOxLtbk4HhzWUkj1G65IBhXpYtl7gHkr6wdnwH2cs5CIsgUeRoSF6C1QTVdY321qVyoFBMRO/mX4mipuiwAD6DFltbCnwAKcT34EUodTRhIGIOseasy/SatFIGtNdxKIiCVtaIqaZuuVUqdKSaCSL8o5dW+2HqFdMOU3HOLEGvilYNzR2ulxYzIqqnpT8fwTiPCbtHQ=
-  - secure: "xJZy8OCt0ywLjzxIJAg0b76hjA3h48BLhnPYBe3Dmfbs14FTJhZxybyd5W5H9zySyA4QIyiFRQM5KkiYrvlFuWuPm6xwdZ/ciq5FHh7lNrZ5J9K8rCBCc0hBqDYxTpCmaun7tBXGzbYe5WUe86/0ACZPkUpRYSZphInxIXioffpc2tcCdtqoJ9YFhsbxBHMv5FPPvd6eGSaxgbE8h0VU8LBQahev8ZLLf5SBM5I+fZY4I4+yemColkJDEBsozsCMicizbwqWIGwS/f0oiNq87xBem9nI0u3rIL5ElLGrvfP5NnlK8M+14Fv8KinUB4aU8SAoFRiAgbEJLn9PRXeqTSXOQg0iy3j6cJnXSZSPNaUfJs9QjwWdahLM1+P4LieiI2CqLzjrwdyF34gTAGJ0kQyo1Qb9IfvGh1alZSDqAHgJs1tV0w0k03iazpKPlGTBV0wWc3S63bKsmRqtUSutsPeqxMwhG5DkxDbuyaIl/yF37mzjI+SsUNVvWg6OhkMTuqHZeJ34qklY3/irMFzrXbGx+A+MXfiZfb/ozkiVX5hWW2TrWix8Y4L+IRP2ft8zQpdiYEC+Vcmv+dHcOIJPwVHgplMUr5USKVj8wid2R0E+COIOVh0Mqox7s0SzRLyIzy1kzMb9ElrgagTD63sIAh2IP7F1j2K0KOauz7vlr8M="
+  - secure: "Iix5SNCWl8FOmm3fBJe3mYpCH4385V7rfU+DeEj4GEH+Eb+yqDNj1QVmglgNBFIJiILIgBl1aDuKaUPx/BFX9G+zB/Obvx+mRlAUXUkzcmyvZNlIlQ320wSgQE/LekHfAGWyHsSpJQUYmHDJKIsxb4Sb5eIk+Wy3ShJPfYEMMsSoSPPs75aeEfMpwisE7UlUj1u5opYZyBnRgXfVkXlcuaJlZQSNrhDXTiBhFkOL5+s51oAf1HMYo94zwRAMOV2CYNIW0WCJGrqQyZFc9maZ7t1xxt0ORmYKv/xu1YupufiRQ/qPWP8+2Q33N72Vw7Wv6R1WmFO0Nl1sXPmiIKwLuVwygrGlIuIrgl9s3eq49NeHEYX3chb/JC1J2xrhfZU8tO/qWGJone1QsibYbNDsYJp59yIGbbm8CbSUU5N3/rIqW/2JfoKzeF5cOYlVPmrqQznHJ2R8kURHM+qu7EFBGZGD7AX7/uVrDKZgipuACks+pxndOW9tn/wfDALQB4/FUzVCERd35x0NITWzzUXZlup2RIXQOtf0I/dSuB4coXN0VLth9wZhXYtCdCJcQK6Riitq2I4q/AB79njh9pBmOUZnmHio49ytyd5LaXXYumHkE3/9IuVS7tDi4d99y8ruw4L3+tpttfJpAvB+DA8PGBtS6TZsbluoK3852GrDSRo="
 install: 
 - sudo apt-get update -qq
 - sudo apt-get install -y make python-setuptools python-pip python-virtualenv python-dev
 - sudo apt-get install -y g++ cmake libboost1.55-all-dev libcurl4-openssl-dev
 - sudo apt-get install -y zlib1g-dev libbz2-dev flex bison autoconf
 script: 
-- env
 - wget https://wiki.dnanexus.com/images/files/dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
 - tar xf dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
 - source dx-toolkit/environment
@@ -25,7 +24,6 @@ script:
 - tar xf samtools-1.3.1.tar.bz2
 - cd samtools-1.3.1 && ./configure --with-htslib=system --without-curses && make && sudo make install && cd ..
 - export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-- env
 - dx ls
 - bash tests/test.sh
 language: c
