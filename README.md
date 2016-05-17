@@ -1,3 +1,6 @@
+[![Build
+Status](https://travis-ci.org/mckinsel/htslib_dnanexus_plugin.svg?branch=master)](https://travis-ci.org/mckinsel/htslib_dnanexus_plugin)
+
 DNAnexus HTSlib Plugin
 ======================
 
@@ -7,7 +10,7 @@ DNAnexus platform.
 For example, the plugin enables the following samtools command:
 
 ```
-samtools view dx:my\_remote\_alignments.bam 10:2000000-3000000
+samtools view dx:my_remote_alignments.bam 10:2000000-3000000
 ```
 
 This command will behave just as it would for a local BAM file even though
@@ -67,7 +70,7 @@ sudo cp hfile_dnanexus.so /usr/local/libexec/htslib
 ```
 tar xf samtools-1.3.1.tar.bz2
 cd samtools-1.3.1 && ./configure --with-htslib=system --without-curses && make && sudo make install && cd ..
-export LD\_LIBRARY\_PATH=/usr/local/lib:$LD\_LIBRARY\_PATH
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 ```
 
 
